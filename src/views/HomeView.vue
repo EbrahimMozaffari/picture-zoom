@@ -1,9 +1,12 @@
-<script setup lang="ts">
-import TheWelcome from '@/components/TheWelcome.vue'
-</script>
+
 
 <template>
-  <main>
-    <TheWelcome />
+  <main class="container mx-auto">
+    <h1>Hello there</h1>
+    <slider />
   </main>
 </template>
+
+<script setup>
+import slider from '../components/product/slider.vue';
+</script>
