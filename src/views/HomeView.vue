@@ -2,8 +2,16 @@
 
 <template>
   <main class="container mx-auto">
-    <h1>Hello there</h1>
-    <slider />
+    <div class="w-full text-center">
+      <div class="lg:w-1/2 sm:w-full md:w-1/2">
+        <slider />
+      </div>
+      <div class="w-1/2">
+
+      </div>
+      
+    </div>
+    
   </main>
 </template>
 
