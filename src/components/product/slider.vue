@@ -1,15 +1,19 @@
 <template>
-    <div class="container relative   grid content-center" id="slider">
-           <div class=" z-40 w-full flex justify-between ">
-            <button class="text-white bg-slate-600 rounded-full" @click="previous"><arrowLeft /></button>
-            <button class="text-white mr-2 bg-slate-600 rounded-full" @click="next"><arrowRight /></button>    
+    <div class="container relative flex flex-col justify-between" id="slider">
+           <div class=" z-40 w-full h-full  flex justify-between">
+            <button class="h-full"  @click="previous"><arrowLeft class="text-white bg-slate-600 rounded-full " /></button>
+            <button  @click="next"><arrowRight class="text-white mr-2 bg-slate-600 rounded-full" /></button>    
          </div>
         <transition name="fade">
         <template v-for="(img, index) in images">
             <img :key="index"  v-if="currentIndex == index" class="imageSlider absolute" :src="img" />
         </template>
       </transition> 
-      <div class="relative">ddd</div>
+      <div class="thumbnail">
+        <div v-for="(img, index) in images" :key="index">
+          <img @click="changeCurrentImage(index)"  width="50" height="50"  class="imgCustom mx-1 cursor-pointer " :src="img" />
+      </div>
+      </div>
     </div>
 </template>
 
@@ -21,6 +25,26 @@ import arrowLeft from '@/components/icons/arrowLeft.vue'
 const show = ref(false)
 const currentIndex = ref(0)
 const images = ref([
+    '/images/img_girl.jpg',
+    '/images/p1-1-big.jpg',
+    '/images/carousel-3.svg',
+    '/images/carousel-4.svg',
+    '/images/img_girl.jpg',
+    '/images/p1-1-big.jpg',
+    '/images/carousel-3.svg',
+    '/images/carousel-4.svg',
+    '/images/img_girl.jpg',
+    '/images/p1-1-big.jpg',
+    '/images/carousel-3.svg',
+    '/images/carousel-4.svg',
+    '/images/img_girl.jpg',
+    '/images/p1-1-big.jpg',
+    '/images/carousel-3.svg',
+    '/images/carousel-4.svg',
+    '/images/img_girl.jpg',
+    '/images/p1-1-big.jpg',
+    '/images/carousel-3.svg',
+    '/images/carousel-4.svg',
     '/images/img_girl.jpg',
     '/images/p1-1-big.jpg',
     '/images/carousel-3.svg',
@@ -40,16 +64,24 @@ const previous = ()=>{
     }
 }
 
+const changeCurrentImage = (index)=>{
+  currentIndex.value = index;  
+}
 </script>
 
 <style scoped>
+
+.imgCustom{
+  width: 70px !important;
+  height: 60px !important;
+}
 #slider{
-    height: 400px;
+    height: 500px;
 }
 .imageSlider{
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 450px;
 }
 .fade-enter-active, .fade-leave-active {
     transition: opacity .5s;
