@@ -4,21 +4,22 @@
             <button class="h-full"  @click="previous"><arrowLeft class="text-white bg-slate-600 rounded-full " /></button>
             <button  @click="next"><arrowRight class="text-white mr-2 bg-slate-600 rounded-full" /></button>    
          </div>
-         <div>
+         <div @mouseenter="mouseOverPicture"  @mouseleave="mouseOutPicture">
             <transition name="fade">
         <template v-for="(img, index) in images">
-            <img  :key="index"  v-if="currentIndex == index" class="imageSlider absolute" :src="img.medium" />
+            <img  :key="index" ref="myimage" @mousemove="moveLens($event)"  v-if="currentIndex == index" class="imageSlider absolute z-40" :src="img.medium" />
         </template>
       </transition> 
+      <div ref="lens" :style="`top:${lensY}px; left:${lensX}px`" class="lens z-50 " :class="lensShow ? 'border border-red-600 border-dashed': ''"></div>
          </div>
         
       <div class="thumbnail absolute bottom-0 order-last flex z-50">
         <div v-for="(img, index) in images" :key="index">
           <img @click="changeCurrentImage(index)" :class="currentIndex == index ? 'activeThumbnail' : ''"  class="imgCustom mx-1 cursor-pointer " :src="img.small" />
+        </div>
       </div>
-      </div>
-      <div class="fixed right-0 w-1/2">
-
+      <div  class="fixed right-0 w-1/2 h-1/2">
+        <div ref="result"   id="myresult" class="img-zoom-result  w-full h-full"></div>
 
       </div>
     </div>
@@ -30,104 +31,131 @@ import { onMounted, ref } from "vue";
 import arrowRight from '@/components/icons/arrowRight.vue'
 import arrowLeft from '@/components/icons/arrowLeft.vue'
 
-const show = ref(false)
+const lensShow = ref(false)
 const currentIndex = ref(0)
 const images = ref([
-    {small:'https://picsum.photos/id/230/60/45',medium:'https://picsum.photos/id/230/600/450',larg:'https://picsum.photos/id/230/900/700'},
-    {small:'https://picsum.photos/id/231/60/45',medium:'https://picsum.photos/id/231/600/450',larg:'https://picsum.photos/id/231/900/700'},
-    {small:'https://picsum.photos/id/232/60/45',medium:'https://picsum.photos/id/232/600/450',larg:'https://picsum.photos/id/232/900/700'},
-    {small:'https://picsum.photos/id/233/60/45',medium:'https://picsum.photos/id/233/600/450',larg:'https://picsum.photos/id/233/900/700'},
-    {small:'https://picsum.photos/id/234/60/45',medium:'https://picsum.photos/id/234/600/450',larg:'https://picsum.photos/id/234/900/700'},
+    // {small:'/images/p2-1-small.jpg',medium:'/images/p2-1-medium.jpg',larg:'/images/p2-1-larg.jpg'},
+    // {small:'/images/p2-2-small.jpg',medium:'/images/p2-2-medium.jpg',larg:'/images/p2-2-larg.jpg'},
+    {small:'https://picsum.photos/id/230/60/45',medium:'https://picsum.photos/id/230/600/450',larg:'https://picsum.photos/id/230/1600/1200'},
+    {small:'https://picsum.photos/id/231/60/45',medium:'https://picsum.photos/id/231/600/450',larg:'https://picsum.photos/id/231/1600/1200'},
+    {small:'https://picsum.photos/id/232/60/45',medium:'https://picsum.photos/id/232/600/450',larg:'https://picsum.photos/id/232/1600/1200'},
+    {small:'https://picsum.photos/id/233/60/45',medium:'https://picsum.photos/id/233/600/450',larg:'https://picsum.photos/id/233/1600/1200'},
+    {small:'https://picsum.photos/id/234/60/45',medium:'https://picsum.photos/id/234/600/450',larg:'https://picsum.photos/id/234/1600/1200'},
 
 
 ])
 
+const myimage = ref(null)
+const lens = ref(null)
+const result = ref(null)
+const lensX = ref(0)
+const lensY = ref(0)
+const cx  = ref(0)
+const cy = ref(0)
 
+onMounted(()=>{
+  /*calculate the ratio between result DIV and lens:*/
+  messureSize();
+
+})
+
+const messureSize = ()=>{
+
+  setTimeout(()=>{
+  cx.value = result.value.offsetWidth / lens.value.offsetWidth;
+  cy.value = result.value.offsetHeight / lens.value.offsetHeight;
+  console.log("cx.value",cx.value,"-> cy.value",cy.value);
+ // result.value.style.backgroundImage = "url('" + images.value[currentIndex.value].larg + "')";
+result.value.style.backgroundSize = (myimage.value[0].width * cx.value) + "px " + (myimage.value[0].height * cy.value) + "px";
+  },1000)
+
+}
+const mouseOverPicture =()=>{
+  lensShow.value = true
+  result.value.style.backgroundImage = "url('" + images.value[currentIndex.value].larg + "')";
+  //messureSize()
+}
+const mouseOutPicture =()=>{
+  lensShow.value = false
+  result.value.style.backgroundImage = ''
+}
+const moveLens = (e)=> {
+
+    let pos, x, y;
+    /*prevent any other actions that may occur when moving over the image:*/
+    e.preventDefault();
+    /*get the cursor's x and y positions:*/
+    pos = getCursorPos(e);
+    //console.log("lens.offsetWidth",lens.value.offsetWidth);
+    /*calculate the position of the lens:*/
+    x = pos.x - (lens.value.offsetWidth / 2);
+    y = pos.y - (lens.value.offsetHeight / 2);
+    /*prevent the lens from being positioned outside the image:*/
+    if (x > myimage.value[0].width - lens.value.offsetWidth) {x = myimage.value[0].width - lens.value.offsetWidth;}
+    if (x < 0) {x = 0;}
+    if (y > myimage.value[0].height - lens.value.offsetHeight) {y = myimage.value[0].height - lens.value.offsetHeight;}
+    if (y < 0) {y = 0;}
+    /*set the position of the lens:*/
+    //console.log(x,y);
+      lensY.value = y
+      lensX.value = x
+    // lens.style.left = x + "px";
+    // lens.style.top = y + "px";
+    /*display what the lens "sees":*/
+
+    result.value.style.backgroundPosition = "-" + (x * cx.value) + "px -" + (y * cy.value) + "px";
+  }
+const getCursorPos = (e)=>{
+      let a, x = 0, y = 0;
+    e = e || window.event;
+    /*get the x and y positions of the image:*/
+    a = myimage.value[0].getBoundingClientRect();
+    /*calculate the cursor's x and y coordinates, relative to the image:*/
+    x = e.pageX - a.left;
+    y = e.pageY - a.top;
+    /*consider any page scrolling:*/
+    x = x - window.pageXOffset;
+    y = y - window.pageYOffset;
+    return {x : x, y : y};
+  //console.log(e);
+}
 const next = ()=>{
+
     //currentIndex.value ++;
         if(++currentIndex.value > images.value.length -1){
             currentIndex.value = 0;     
         }
+        messureSize()
     
 }
 const previous = ()=>{
     if(--currentIndex.value < 0){
         currentIndex.value = (images.value.length -1);
     }
+    messureSize()
 }
 
 const changeCurrentImage = (index)=>{
+   //messureSize()
   currentIndex.value = index;  
+  //console.log(myimage.value);
+  
 }
 
-
-// onMounted(()=>{
-
-
-// imageZoom("myimage", "myresult");
-// function imageZoom(imgID, resultID) {
-//   var img, lens, result, cx, cy;
-//   img = document.getElementById(imgID);
-//   result = document.getElementById(resultID);
-//   /*create lens:*/
-//   lens = document.createElement("DIV");
-//   lens.setAttribute("class", "img-zoom-lens");
-//   /*insert lens:*/
-//   img.parentElement.insertBefore(lens, img);
-//   /*calculate the ratio between result DIV and lens:*/
-//   cx = result.offsetWidth / lens.offsetWidth;
-//   cy = result.offsetHeight / lens.offsetHeight;
-//   /*set background properties for the result DIV:*/
-//   result.style.backgroundImage = "url('" + img.src + "')";
-//   result.style.backgroundSize = (img.width * cx) + "px " + (img.height * cy) + "px";
-//   /*execute a function when someone moves the cursor over the image, or the lens:*/
-//   lens.addEventListener("mousemove", moveLens);
-//   img.addEventListener("mousemove", moveLens);
-//   /*and also for touch screens:*/
-//   lens.addEventListener("touchmove", moveLens);
-//   img.addEventListener("touchmove", moveLens);
-//   function moveLens(e) {
-//     var pos, x, y;
-//     /*prevent any other actions that may occur when moving over the image:*/
-//     e.preventDefault();
-//     /*get the cursor's x and y positions:*/
-//     pos = getCursorPos(e);
-//     /*calculate the position of the lens:*/
-//     x = pos.x - (lens.offsetWidth / 2);
-//     y = pos.y - (lens.offsetHeight / 2);
-//     /*prevent the lens from being positioned outside the image:*/
-//     if (x > img.width - lens.offsetWidth) {x = img.width - lens.offsetWidth;}
-//     if (x < 0) {x = 0;}
-//     if (y > img.height - lens.offsetHeight) {y = img.height - lens.offsetHeight;}
-//     if (y < 0) {y = 0;}
-//     /*set the position of the lens:*/
-//     lens.style.left = x + "px";
-//     lens.style.top = y + "px";
-//     /*display what the lens "sees":*/
-//     result.style.backgroundPosition = "-" + (x * cx) + "px -" + (y * cy) + "px";
-//   }
-//   function getCursorPos(e) {
-//     var a, x = 0, y = 0;
-//     e = e || window.event;
-//     /*get the x and y positions of the image:*/
-//     a = img.getBoundingClientRect();
-//     /*calculate the cursor's x and y coordinates, relative to the image:*/
-//     x = e.pageX - a.left;
-//     y = e.pageY - a.top;
-//     /*consider any page scrolling:*/
-//     x = x - window.pageXOffset;
-//     y = y - window.pageYOffset;
-//     return {x : x, y : y};
-//   }
-// }
-
-// })
 
 
 
 </script>
 
 <style scoped>
+.lens{
+  position: absolute;
+  /*set the size of the lens:*/
+  width: 100px;
+  height: 80px;
+  top: 0;
+  right: 0;
+}
 
 
 #slider{
