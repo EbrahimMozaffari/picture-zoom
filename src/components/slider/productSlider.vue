@@ -1,5 +1,5 @@
 <template>
-    <div class="container relative flex justify-end" id="slider">
+    <div class=" relative flex justify-end" id="slider">
            <div class=" z-40 w-full h-full  flex justify-between absolute">
             <button class="h-full"  @click="previous"><arrowLeft class="text-white bg-slate-600 rounded-full " /></button>
             <button  @click="next"><arrowRight class="text-white mr-2 bg-slate-600 rounded-full" /></button>    
@@ -10,7 +10,7 @@
             <img  :key="index" ref="myimage" @mousemove="moveLens($event)"  v-if="currentIndex == index" class="imageSlider absolute z-40" :src="img.medium" />
         </template>
       </transition> 
-      <div ref="lens" :style="`top:${lensY}px; left:${lensX}px`" class="lens z-50 " :class="lensShow ? 'border border-red-600 border-dashed': ''"></div>
+      <div ref="lens" :style="`top:${lensY}px; left:${lensX}px; width:${lensW}px; height:${lensH}px;`" class="lens z-50" :class="lensShow ? 'border border-red-600 border-dashed': ''"></div>
          </div>
         
       <div class="thumbnail absolute bottom-0 order-last flex z-50">
@@ -18,7 +18,7 @@
           <img @click="changeCurrentImage(index)" :class="currentIndex == index ? 'activeThumbnail' : ''"  class="imgCustom mx-1 cursor-pointer " :src="img.small" />
         </div>
       </div>
-      <div  class="fixed right-0 w-1/2 h-1/2">
+      <div  class="fixed right-0 w-1/2 h-full">
         <div ref="result"   id="myresult" class="img-zoom-result  w-full h-full"></div>
 
       </div>
@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import arrowRight from '@/components/icons/arrowRight.vue'
 import arrowLeft from '@/components/icons/arrowLeft.vue'
 
@@ -36,11 +36,11 @@ const currentIndex = ref(0)
 const images = ref([
     // {small:'/images/p2-1-small.jpg',medium:'/images/p2-1-medium.jpg',larg:'/images/p2-1-larg.jpg'},
     // {small:'/images/p2-2-small.jpg',medium:'/images/p2-2-medium.jpg',larg:'/images/p2-2-larg.jpg'},
-    {small:'https://picsum.photos/id/230/60/45',medium:'https://picsum.photos/id/230/600/450',larg:'https://picsum.photos/id/230/1600/1200'},
-    {small:'https://picsum.photos/id/231/60/45',medium:'https://picsum.photos/id/231/600/450',larg:'https://picsum.photos/id/231/1600/1200'},
-    {small:'https://picsum.photos/id/232/60/45',medium:'https://picsum.photos/id/232/600/450',larg:'https://picsum.photos/id/232/1600/1200'},
-    {small:'https://picsum.photos/id/233/60/45',medium:'https://picsum.photos/id/233/600/450',larg:'https://picsum.photos/id/233/1600/1200'},
-    {small:'https://picsum.photos/id/234/60/45',medium:'https://picsum.photos/id/234/600/450',larg:'https://picsum.photos/id/234/1600/1200'},
+    {small:'https://picsum.photos/id/230/60/45',medium:'https://picsum.photos/id/230/600/450',larg:'https://picsum.photos/id/230/3200/2400'},
+    {small:'https://picsum.photos/id/231/60/45',medium:'https://picsum.photos/id/231/600/450',larg:'https://picsum.photos/id/231/3200/2400'},
+    {small:'https://picsum.photos/id/232/60/45',medium:'https://picsum.photos/id/232/600/450',larg:'https://picsum.photos/id/232/3200/2400'},
+    {small:'https://picsum.photos/id/233/60/45',medium:'https://picsum.photos/id/233/600/450',larg:'https://picsum.photos/id/233/3200/2400'},
+    {small:'https://picsum.photos/id/234/60/45',medium:'https://picsum.photos/id/234/600/450',larg:'https://picsum.photos/id/234/3200/2400'},
 
 
 ])
@@ -50,13 +50,20 @@ const lens = ref(null)
 const result = ref(null)
 const lensX = ref(0)
 const lensY = ref(0)
+const lensW = ref(100)
+const lensH = ref(150)
 const cx  = ref(0)
 const cy = ref(0)
 
 onMounted(()=>{
   /*calculate the ratio between result DIV and lens:*/
+  resizeHandler();
   messureSize();
+  window.addEventListener("resize", resizeHandler);
 
+})
+onUnmounted(()=>{
+  window.removeEventListener("resize", resizeHandler);
 })
 
 const messureSize = ()=>{
@@ -142,6 +149,20 @@ const changeCurrentImage = (index)=>{
   
 }
 
+const lensDimentoin = computed(()=>{
+  
+})
+
+
+const resizeHandler = ()=>{
+  // let h =  window.innerHeight;
+  // let w =  window.innerWidth;
+  lensW.value = window.innerWidth/20
+  lensH.value = window.innerHeight/10
+  messureSize();
+
+}
+
 
 
 
@@ -151,8 +172,8 @@ const changeCurrentImage = (index)=>{
 .lens{
   position: absolute;
   /*set the size of the lens:*/
-  width: 100px;
-  height: 80px;
+  width: 150px;
+  height: 100px;
   top: 0;
   right: 0;
 }
