@@ -5,7 +5,7 @@
     <div class="w-full text-center">
       <div class="lg:w-1/2 sm:w-full md:w-1/2">
         <!-- <slider /> -->
-        <productSlider />
+        <!-- <productSlider /> -->
       </div>
       <div class="w-1/2">
         <div class="img-zoom-container">
@@ -89,7 +89,7 @@ onMounted(()=>{
   cy.value = result.value.offsetHeight / lens.value.offsetHeight;
   console.log("cx.value",cx.value,"-> cy.value",cy.value);
     //result.value.style.backgroundImage = "url('" + myimage.value.src + "')";
-result.value.style.backgroundImage = "url('https://picsum.photos/id/230/1200/600')";
+result.value.style.backgroundImage = "url('https://picsum.photos/id/230/1920/1080')";
     result.value.style.backgroundSize = (myimage.value.width * cx.value) + "px " + (myimage.value.height * cy.value) + "px";
   },1000)
 

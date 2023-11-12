@@ -2,10 +2,10 @@
   <div class="relative">
     <!-- <button class="z-50 absolute left-0"  @click="previous"><arrowLeft class="text-white bg-slate-600 rounded-full " /></button>
     <button class="z-50 absolute right-0"  @click="next"><arrowRight class="text-white mr-2 bg-slate-600 rounded-full" /></button>     -->
-    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center left-0" @click="previous">
+    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center left-0 z-50" @click="previous">
       <arrowLeft class="text-white bg-slate-600 rounded-full cursor-pointer" />
     </div>
-    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center right-0" @click="next">
+    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center right-0 z-50" @click="next">
       <arrowRight class="text-white mr-2 bg-slate-600 rounded-full cursor-pointer" style="" />
     </div>
    
