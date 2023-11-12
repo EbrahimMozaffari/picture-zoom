@@ -1,19 +1,22 @@
 <template>
-  <div class="relative">
+  <div class="relative"     >
     <!-- <button class="z-50 absolute left-0"  @click="previous"><arrowLeft class="text-white bg-slate-600 rounded-full " /></button>
     <button class="z-50 absolute right-0"  @click="next"><arrowRight class="text-white mr-2 bg-slate-600 rounded-full" /></button>     -->
-    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center left-0 z-50" @click="previous">
+    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center left-0 z-50" @click="previous"
+    >
       <arrowLeft class="text-white bg-slate-600 rounded-full cursor-pointer" />
     </div>
-    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center right-0 z-50" @click="next">
+    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center right-0 z-50" @click="next" >
       <arrowRight class="text-white mr-2 bg-slate-600 rounded-full cursor-pointer" style="" />
     </div>
    
-        <div class=" relative flex justify-end" id="slider">
-           <!-- <div class=" z-40 w-full h-full  flex justify-between absolute">
-           
-         </div> -->
-         <div @mouseenter="mouseOverPicture"  @mouseleave="mouseOutPicture">
+        <div class=" relative flex justify-end" id="slider" >
+         <div 
+            @mouseenter="mouseOverPicture"  
+            @mouseleave="mouseOutPicture" 
+            @touchstart="touchStart"
+            @touchmove="touchMove"
+            @touchend="touchEnd">
             <transition name="fade">
         <template v-for="(img, index) in images">
             <img  :key="index" ref="myimage" @mousemove="moveLens($event)"  v-if="currentIndex == index" class="imageSlider absolute z-40" :src="img.medium" />
@@ -66,6 +69,14 @@ const lensH = ref(150)
 const cx  = ref(0)
 const cy = ref(0)
 
+const touchState = ref({
+  startX: 0,
+  startY: 0,
+  isSwiping: false,
+});
+
+
+
 onMounted(()=>{
   /*calculate the ratio between result DIV and lens:*/
   resizeHandler();
@@ -89,8 +100,11 @@ result.value.style.backgroundSize = (myimage.value[0].width * cx.value) + "px " 
 
 }
 const mouseOverPicture =()=>{
-  lensShow.value = true
-  result.value.style.backgroundImage = "url('" + images.value[currentIndex.value].larg + "')";
+  if(window.innerWidth>1024){
+      lensShow.value = true
+      result.value.style.backgroundImage = "url('" + images.value[currentIndex.value].larg + "')";
+  }
+
   //messureSize()
 }
 const mouseOutPicture =()=>{
@@ -138,13 +152,11 @@ const getCursorPos = (e)=>{
   //console.log(e);
 }
 const next = ()=>{
-
     //currentIndex.value ++;
         if(++currentIndex.value > images.value.length -1){
             currentIndex.value = 0;     
         }
         messureSize()
-    
 }
 const previous = ()=>{
     if(--currentIndex.value < 0){
@@ -160,11 +172,6 @@ const changeCurrentImage = (index)=>{
   
 }
 
-const lensDimentoin = computed(()=>{
-  
-})
-
-
 const resizeHandler = ()=>{
   // let h =  window.innerHeight;
   // let w =  window.innerWidth;
@@ -174,6 +181,39 @@ const resizeHandler = ()=>{
 
 }
 
+const touchStart = (e) => {
+  touchState.value = {
+    startX: e.touches[0].clientX,
+    startY: e.touches[0].clientY,
+    isSwiping: false,
+  };
+};
+
+
+const touchMove = (e) => {
+  const diffX = e.touches[0].clientX - touchState.value.startX;
+  
+  if (!touchState.value.isSwiping ) {
+    touchState.value.isSwiping = true;
+
+    if (diffX > 0) {
+      // Swipe right
+      next();
+    } else {
+      previous();
+      // Swipe left
+      
+    }
+  }
+
+  touchState.value.startX = e.touches[0].clientX;
+  touchState.value.startY = e.touches[0].clientY;
+};
+
+const touchEnd = () => {
+  // Additional touch end logic if needed
+  touchState.value.isSwiping = false;
+};
 
 
 
