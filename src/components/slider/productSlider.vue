@@ -1,9 +1,18 @@
 <template>
-    <div class=" relative flex justify-end" id="slider">
-           <div class=" z-40 w-full h-full  flex justify-between absolute">
-            <button class="h-full"  @click="previous"><arrowLeft class="text-white bg-slate-600 rounded-full " /></button>
-            <button  @click="next"><arrowRight class="text-white mr-2 bg-slate-600 rounded-full" /></button>    
-         </div>
+  <div class="relative">
+    <!-- <button class="z-50 absolute left-0"  @click="previous"><arrowLeft class="text-white bg-slate-600 rounded-full " /></button>
+    <button class="z-50 absolute right-0"  @click="next"><arrowRight class="text-white mr-2 bg-slate-600 rounded-full" /></button>     -->
+    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center left-0" @click="previous">
+      <arrowLeft class="text-white bg-slate-600 rounded-full cursor-pointer" />
+    </div>
+    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center right-0" @click="next">
+      <arrowRight class="text-white mr-2 bg-slate-600 rounded-full cursor-pointer" style="" />
+    </div>
+   
+        <div class=" relative flex justify-end" id="slider">
+           <!-- <div class=" z-40 w-full h-full  flex justify-between absolute">
+           
+         </div> -->
          <div @mouseenter="mouseOverPicture"  @mouseleave="mouseOutPicture">
             <transition name="fade">
         <template v-for="(img, index) in images">
@@ -23,6 +32,8 @@
 
       </div>
     </div>
+  </div>
+
 
 </template>
 
@@ -71,7 +82,7 @@ const messureSize = ()=>{
   setTimeout(()=>{
   cx.value = result.value.offsetWidth / lens.value.offsetWidth;
   cy.value = result.value.offsetHeight / lens.value.offsetHeight;
-  console.log("cx.value",cx.value,"-> cy.value",cy.value);
+ // console.log("cx.value",cx.value,"-> cy.value",cy.value);
  // result.value.style.backgroundImage = "url('" + images.value[currentIndex.value].larg + "')";
 result.value.style.backgroundSize = (myimage.value[0].width * cx.value) + "px " + (myimage.value[0].height * cy.value) + "px";
   },1000)
