@@ -84,7 +84,7 @@
             <img  :key="index" ref="myimage" @mousemove="moveLens($event)"  v-if="currentIndex == index" class="imageSlider absolute z-30" :src="img.medium" />
         </template>
       </transition> 
-      <div ref="lens" :style="`top:${lensY}px; left:${lensX}px; width:${lensW}px; height:${lensH}px;`" @click="openPopupModal(currentIndex)" class="lens z-50" :class="lensShow ? 'border border-red-600 border-dashed': ''"></div>
+      <div ref="lens" v-if="!popUpModal" :style="`top:${lensY}px; left:${lensX}px; width:${lensW}px; height:${lensH}px;`" @click="openPopupModal(currentIndex)" class="lens z-50" :class="lensShow ? 'border border-red-600 border-dashed': ''"></div>
          </div>
         
       <div class="thumbnail absolute bottom-0 order-last flex ">
