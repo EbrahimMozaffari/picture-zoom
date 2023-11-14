@@ -6,7 +6,7 @@
       <div class="h-5/6 w-11/12  mx-auto rounded-xl relative" >
         <div class="container overflow-hidden md:rounded-xl rounded-xl h-full">
           <div class=" w-full h-full">
-              <div class=" bg-white rounded-xl shadow dark:bg-gray-700 h-full">
+              <div class="relative bg-white rounded-xl shadow dark:bg-gray-700 h-full">
                 <ul class="w-2/3 flex mb-0 list-none flex-wrap  pb-4 flex-row">
                   <li class="-mb-px mr-0 last:mr-0 flex-auto text-center">
                     <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded  block leading-normal" v-on:click="toggleTabs(1)" :class="{'text-pink-600 bg-white': openTab !== 1, 'text-white bg-pink-600': openTab === 1}">
@@ -40,20 +40,27 @@
                           </div>
                       </div>
                       <div :class="{'hidden': openTab !== 2, 'block': openTab === 2}" class="h-full">
-                        <p>
-                          Completely synergize resource taxing relationships via
-                          premier niche markets. Professionally cultivate one-to-one
-                          customer service with robust ideas.
-                          <br />
-                          <br />
-                          Dynamically innovate resource-leveling customer service for
-                          state of the art customer service.
-                        </p>
+                        <div class="grid grid-cols-4">
+                          <div class="relative lg:col-span-3 col-span-4 h-full">
+                            <video v-if="videoShow" width="100%" height="240" controls :poster="video[currentVideoIndex].cover"> 
+                              <source :src="video[currentVideoIndex].source" type="video/mp4">
+                              Your browser does not support the video tag.
+                            </video>
+                          </div>
+                          <div class="lg:col-span-1 col-span-4  relative">
+                            <div class="bottom-0 order-last grid grid-cols-3">
+                              <div v-for="(item, index) in video" :key="index" class="">
+                                <img @click="changePopupCurrentVideo(index)" :class="currentVideoIndex == index ? 'activeThumbnail' : ''"  class="imgCustomPopup mx-1 cursor-pointer my-1 " :src="item.cover" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
 
                 
-                <button @click="popUpModal = !popUpModal" data-modal-hide="popup-modal" type="button"><customDelete class="absolute -top-2 -right-2" /></button>
+                <button @click="popUpModal = !popUpModal" data-modal-hide="popup-modal" type="button" class="absolute -right-1 -top-1"><customDelete class="" /></button>
               </div>
+              
           </div>
         </div>
       </div>
@@ -111,8 +118,13 @@ const images = ref([
     {small:'https://picsum.photos/id/232/60/45',medium:'https://picsum.photos/id/232/600/450',large:'https://picsum.photos/id/232/3200/2400'},
     {small:'https://picsum.photos/id/233/60/45',medium:'https://picsum.photos/id/233/600/450',large:'https://picsum.photos/id/233/3200/2400'},
     {small:'https://picsum.photos/id/234/60/45',medium:'https://picsum.photos/id/234/600/450',large:'https://picsum.photos/id/234/3200/2400'},
+    {small:'https://picsum.photos/id/400/60/45',medium:'https://picsum.photos/id/400/600/450',large:'https://picsum.photos/id/400/3200/2400'},
 
+])
 
+const video= ref([
+  {cover:'https://picsum.photos/id/500/600/450',source:'/video/video-01.mp4'},
+  {cover:'https://picsum.photos/id/550/600/450',source:'/video/video-02.mp4'},
 ])
 
 const myimage = ref(null)
@@ -136,7 +148,9 @@ const scale = ref(1);
 const isZoomed = ref(false)
 const popupImage = ref(null)
 const openTab = ref(1)
-const originalTransform = ref('');
+const currentVideoIndex = ref(0)
+const videoShow = ref(true)
+// const originalTransform = ref('');
 // let zoomed = false; // اضافه شده
 
 onMounted(()=>{
@@ -318,6 +332,15 @@ const toggleZoom = (event) => {
 };
 const toggleTabs = (index) => {
   openTab.value = index
+};
+
+const changePopupCurrentVideo = (index) => {
+  currentVideoIndex.value = index
+  videoShow.value =false
+  setTimeout(()=>{
+    videoShow.value =true
+  },100)
+  
 };
 
 </script>
