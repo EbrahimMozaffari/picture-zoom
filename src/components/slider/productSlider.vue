@@ -260,8 +260,8 @@ const changePopupCurrentImage = (index)=>{
 const resizeHandler = ()=>{
   // let h =  window.innerHeight;
   // let w =  window.innerWidth;
-  lensW.value = window.innerWidth/20
-  lensH.value = window.innerHeight/10
+  lensW.value = window.innerWidth/5
+  lensH.value = window.innerHeight/2
   messureSize();
 
 }
