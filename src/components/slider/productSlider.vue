@@ -1,12 +1,67 @@
 <template>
-  <div class="relative"     >
-    <!-- <button class="z-50 absolute left-0"  @click="previous"><arrowLeft class="text-white bg-slate-600 rounded-full " /></button>
-    <button class="z-50 absolute right-0"  @click="next"><arrowRight class="text-white mr-2 bg-slate-600 rounded-full" /></button>     -->
-    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center left-0 z-50" @click="previous"
-    >
+  <div class="relative">
+    <div class="createToDoModal fixed w-full h-full top-0 left-0 flex items-center justify-center z-50" v-if="popUpModal">
+      <div class="absolute w-full h-full bg-gray-900 opacity-90" ></div>
+  
+      <div class="h-5/6 w-11/12  mx-auto rounded-xl relative" >
+        <div class="container overflow-hidden md:rounded-xl rounded-xl h-full">
+          <div class=" w-full h-full">
+              <div class=" bg-white rounded-xl shadow dark:bg-gray-700 h-full">
+                <ul class="w-2/3 flex mb-0 list-none flex-wrap  pb-4 flex-row">
+                  <li class="-mb-px mr-0 last:mr-0 flex-auto text-center">
+                    <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded  block leading-normal" v-on:click="toggleTabs(1)" :class="{'text-pink-600 bg-white': openTab !== 1, 'text-white bg-pink-600': openTab === 1}">
+                      Images
+                    </a>
+                  </li>
+                  <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
+                    <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded  block leading-normal" v-on:click="toggleTabs(2)" :class="{'text-pink-600 bg-white': openTab !== 2, 'text-white bg-pink-600': openTab === 2}">
+                      Video
+                    </a>
+                  </li>
+                </ul>
+                <hr />
+                      <div :class="{'hidden': openTab !== 1, 'block': openTab === 1}" class="h-full">
+                        <div class="p-10 grid grid-cols-4  h-full">
+                          <div class="relative lg:col-span-3 col-span-4 h-full overflow-hidden">
+                            <transition name="fade">
+                              <template v-for="(img, index) in images">
+                                  <img  :key="index" ref="popupImage" :style="{ transform: `scale(${scale})`, cursor:isZoomed? 'zoom-out': 'zoom-in' }" style=""     @click="toggleZoom" v-if="popupCurrentIndex == index" class=" absolute z-30 w-full popupImg " :src="img.large" />
+                              </template>
+                            </transition> 
+                          </div>
+                          <div class="lg:col-span-1 col-span-4  relative">
+                            <div class="bottom-0 order-last grid grid-cols-3">
+                              <div v-for="(img, index) in images" :key="index" class="">
+                                <img @click="changePopupCurrentImage(index)" :class="popupCurrentIndex == index ? 'activeThumbnail' : ''"  class="imgCustomPopup mx-1 cursor-pointer my-1 " :src="img.medium" />
+                              </div>
+                            </div>
+                          </div>
+                               
+                          </div>
+                      </div>
+                      <div :class="{'hidden': openTab !== 2, 'block': openTab === 2}" class="h-full">
+                        <p>
+                          Completely synergize resource taxing relationships via
+                          premier niche markets. Professionally cultivate one-to-one
+                          customer service with robust ideas.
+                          <br />
+                          <br />
+                          Dynamically innovate resource-leveling customer service for
+                          state of the art customer service.
+                        </p>
+                      </div>
+
+                
+                <button @click="popUpModal = !popUpModal" data-modal-hide="popup-modal" type="button"><customDelete class="absolute -top-2 -right-2" /></button>
+              </div>
+          </div>
+        </div>
+      </div>
+  </div>
+    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center left-0 z-40" @click="previous">
       <arrowLeft class="text-white bg-slate-600 rounded-full cursor-pointer" />
     </div>
-    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center right-0 z-50" @click="next" >
+    <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center right-0 z-40" @click="next" >
       <arrowRight class="text-white mr-2 bg-slate-600 rounded-full cursor-pointer" style="" />
     </div>
    
@@ -19,18 +74,18 @@
             @touchend="touchEnd">
             <transition name="fade">
         <template v-for="(img, index) in images">
-            <img  :key="index" ref="myimage" @mousemove="moveLens($event)"  v-if="currentIndex == index" class="imageSlider absolute z-40" :src="img.medium" />
+            <img  :key="index" ref="myimage" @mousemove="moveLens($event)"  v-if="currentIndex == index" class="imageSlider absolute z-30" :src="img.medium" />
         </template>
       </transition> 
-      <div ref="lens" :style="`top:${lensY}px; left:${lensX}px; width:${lensW}px; height:${lensH}px;`" class="lens z-50" :class="lensShow ? 'border border-red-600 border-dashed': ''"></div>
+      <div ref="lens" :style="`top:${lensY}px; left:${lensX}px; width:${lensW}px; height:${lensH}px;`" @click="openPopupModal(currentIndex)" class="lens z-50" :class="lensShow ? 'border border-red-600 border-dashed': ''"></div>
          </div>
         
-      <div class="thumbnail absolute bottom-0 order-last flex z-50">
+      <div class="thumbnail absolute bottom-0 order-last flex ">
         <div v-for="(img, index) in images" :key="index">
           <img @click="changeCurrentImage(index)" :class="currentIndex == index ? 'activeThumbnail' : ''"  class="imgCustom mx-1 cursor-pointer " :src="img.small" />
         </div>
       </div>
-      <div  class="fixed right-0 w-1/2 h-full">
+      <div  class="fixed right-0 w-1/2 h-full " :class="[mobile ? '-z-10': '']">
         <div ref="result"   id="myresult" class="img-zoom-result  w-full h-full"></div>
 
       </div>
@@ -44,17 +99,18 @@
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import arrowRight from '@/components/icons/arrowRight.vue'
 import arrowLeft from '@/components/icons/arrowLeft.vue'
+import customDelete from '@/components/icons/iconCustomDelete.vue'
 
 const lensShow = ref(false)
 const currentIndex = ref(0)
 const images = ref([
     // {small:'/images/p2-1-small.jpg',medium:'/images/p2-1-medium.jpg',larg:'/images/p2-1-larg.jpg'},
     // {small:'/images/p2-2-small.jpg',medium:'/images/p2-2-medium.jpg',larg:'/images/p2-2-larg.jpg'},
-    {small:'https://picsum.photos/id/230/60/45',medium:'https://picsum.photos/id/230/600/450',larg:'https://picsum.photos/id/230/3200/2400'},
-    {small:'https://picsum.photos/id/231/60/45',medium:'https://picsum.photos/id/231/600/450',larg:'https://picsum.photos/id/231/3200/2400'},
-    {small:'https://picsum.photos/id/232/60/45',medium:'https://picsum.photos/id/232/600/450',larg:'https://picsum.photos/id/232/3200/2400'},
-    {small:'https://picsum.photos/id/233/60/45',medium:'https://picsum.photos/id/233/600/450',larg:'https://picsum.photos/id/233/3200/2400'},
-    {small:'https://picsum.photos/id/234/60/45',medium:'https://picsum.photos/id/234/600/450',larg:'https://picsum.photos/id/234/3200/2400'},
+    {small:'https://picsum.photos/id/230/60/45',medium:'https://picsum.photos/id/230/600/450',large:'https://picsum.photos/id/230/3200/2400'},
+    {small:'https://picsum.photos/id/231/60/45',medium:'https://picsum.photos/id/231/600/450',large:'https://picsum.photos/id/231/3200/2400'},
+    {small:'https://picsum.photos/id/232/60/45',medium:'https://picsum.photos/id/232/600/450',large:'https://picsum.photos/id/232/3200/2400'},
+    {small:'https://picsum.photos/id/233/60/45',medium:'https://picsum.photos/id/233/600/450',large:'https://picsum.photos/id/233/3200/2400'},
+    {small:'https://picsum.photos/id/234/60/45',medium:'https://picsum.photos/id/234/600/450',large:'https://picsum.photos/id/234/3200/2400'},
 
 
 ])
@@ -68,16 +124,23 @@ const lensW = ref(100)
 const lensH = ref(150)
 const cx  = ref(0)
 const cy = ref(0)
-
+const popUpModal = ref(false)
+const mobile = ref(false)
+const popupCurrentIndex = ref(0)
 const touchState = ref({
   startX: 0,
   startY: 0,
   isSwiping: false,
 });
-
-
+const scale = ref(1);
+const isZoomed = ref(false)
+const popupImage = ref(null)
+const openTab = ref(1)
+const originalTransform = ref('');
+// let zoomed = false; // اضافه شده
 
 onMounted(()=>{
+
   /*calculate the ratio between result DIV and lens:*/
   resizeHandler();
   messureSize();
@@ -89,7 +152,9 @@ onUnmounted(()=>{
 })
 
 const messureSize = ()=>{
-
+  if(window.innerWidth<1024){
+    mobile.value=true
+  }
   setTimeout(()=>{
   cx.value = result.value.offsetWidth / lens.value.offsetWidth;
   cy.value = result.value.offsetHeight / lens.value.offsetHeight;
@@ -102,7 +167,7 @@ result.value.style.backgroundSize = (myimage.value[0].width * cx.value) + "px " 
 const mouseOverPicture =()=>{
   if(window.innerWidth>1024){
       lensShow.value = true
-      result.value.style.backgroundImage = "url('" + images.value[currentIndex.value].larg + "')";
+      result.value.style.backgroundImage = "url('" + images.value[currentIndex.value].large + "')";
   }
 
   //messureSize()
@@ -112,7 +177,6 @@ const mouseOutPicture =()=>{
   result.value.style.backgroundImage = ''
 }
 const moveLens = (e)=> {
-
     let pos, x, y;
     /*prevent any other actions that may occur when moving over the image:*/
     e.preventDefault();
@@ -171,7 +235,14 @@ const changeCurrentImage = (index)=>{
   //console.log(myimage.value);
   
 }
-
+const changePopupCurrentImage = (index)=>{
+   //messureSize()
+  popupCurrentIndex.value = index;  
+  isZoomed.value = false
+    scale.value = 1
+  //console.log(myimage.value);
+  
+}
 const resizeHandler = ()=>{
   // let h =  window.innerHeight;
   // let w =  window.innerWidth;
@@ -211,15 +282,52 @@ const touchMove = (e) => {
 };
 
 const touchEnd = () => {
-  // Additional touch end logic if needed
+ 
   touchState.value.isSwiping = false;
 };
 
+const openPopupModal = (index) => {
+  
+  mouseOutPicture()
+  popupCurrentIndex.value = index
+  popUpModal.value = true
+};
 
+const handleZoom = (event) => {
+  const image = event.target;
+  const { left, top, width, height } = image.getBoundingClientRect();
+  const x = (event.clientX - left) / width;
+  const y = (event.clientY - top) / height;
+
+  const zoomFactor = 2;
+  scale.value = zoomFactor;
+
+   image.style.transformOrigin = `${x * 100}% ${y * 100}%`;
+};
+
+const toggleZoom = (event) => {
+ 
+  if(!isZoomed.value){
+    handleZoom(event)
+    isZoomed.value = true
+  }else{
+    isZoomed.value = false
+    scale.value = 1
+    
+  }
+};
+const toggleTabs = (index) => {
+  openTab.value = index
+};
 
 </script>
 
 <style scoped>
+.popupImg {
+  transition: transform 0.3s ease-in-out;
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
 .lens{
   position: absolute;
   /*set the size of the lens:*/
@@ -240,6 +348,9 @@ const touchEnd = () => {
 }
 .activeThumbnail{
     border: 1px #e6eb41  solid;
+}
+.imgCustomPopup{
+  width: 100px;
 }
 .fade-enter-active, .fade-leave-active {
     transition: opacity .5s;
