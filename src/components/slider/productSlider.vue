@@ -65,6 +65,9 @@
         </div>
       </div>
   </div>
+  <!-- end of modal -->
+
+
     <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center left-0 z-40" @click="previous">
       <arrowLeft class="text-white bg-slate-600 rounded-full cursor-pointer" />
     </div>
@@ -72,9 +75,9 @@
       <arrowRight class="text-white mr-2 bg-slate-600 rounded-full cursor-pointer" style="" />
     </div>
    
-        <div class=" relative " id="slider" >
+        <div class=" relative " id="slider" :class="[mobile ? 'customMarginLeft':'customMarginLeft']" >
          <div 
-         class="flex"
+         class=""
             @mouseenter="mouseOverPicture"  
             @mouseleave="mouseOutPicture" 
             @touchstart="touchStart"
@@ -82,23 +85,24 @@
             @touchend="touchEnd">
             <transition name="fade">
         <template v-for="(img, index) in images">
-            <img  :key="index" ref="myimage" @mousemove="moveLens($event)"  v-if="currentIndex == index" class="imageSlider absolute z-30" :src="img.medium" />
+            <img  :key="index" ref="myimage" @mousemove="moveLens($event)"  v-if="currentIndex == index" class="imageSlider absolute z-30 block " :src="img.medium" />
         </template>
       </transition> 
-      <div ref="lens" v-if="!popUpModal" :style="`top:${lensY}px; left:${lensX}px; width:${lensW}px; height:${lensH}px;`" @click="openPopupModal(currentIndex)" class="lens z-50" :class="lensShow ? 'border border-red-600 border-dashed': ''"></div>
+      <div ref="lens" v-if="!popUpModal" :style="`top:${lensY}px; left:${lensX}px; width:${lensW}px; height:${lensH}px;`" @click="openPopupModal(currentIndex)" class="lens absolute z-50" :class="lensShow ? 'border border-red-600 border-dashed': ''"></div>
          </div>
         
-      <div class="thumbnail absolute bottom-0 order-last flex ">
+      <div class=" thumbnail absolute bottom-0 order-last flex ">
         <div v-for="(img, index) in images" :key="index">
           <img @click="changeCurrentImage(index)" :class="currentIndex == index ? 'activeThumbnail' : ''"  class="imgCustom mx-1 cursor-pointer " :src="img.small" />
         </div>
       </div>
-      <div  class="fixed right-0 w-1/2 h-full " :class="[mobile ? '-z-10': '']">
-        <div ref="result"   id="myresult" class="img-zoom-result  w-full h-full"></div>
 
-      </div>
     </div>
-  </div>
+    <div  class="fixed right-0 top-0 w-3/5 h-full pl-6" :class="[mobile ? '-z-10': '']">
+      <div ref="result"   id="myresult" class="img-zoom-result  w-full h-full"></div>
+
+    </div>  
+    </div>
 
 
 </template>
@@ -116,7 +120,7 @@ const images = ref([
     // {small:'/images/p2-2-small.jpg',medium:'/images/p2-2-medium.jpg',larg:'/images/p2-2-larg.jpg'},
     {small:'/images/product-image-thumbnail.jpeg',medium:'/images/product-image.jpeg',large:'/images/product-image-large.jpeg'},
     {small:'/images/product-image-back-thumbnail.jpeg',medium:'/images/product-image-back.jpeg',large:'/images/product-image-back-large.jpeg'},
-    {small:'/images/product-image-front-thumbnail.jpeg',medium:'/images/product-image-front.jpeg',large:'/images/product-image-large-front.jpeg'},
+    {small:'/images/product-image-front-thumbnail.jpeg',medium:'/images/product-image-front.jpeg',large:'/images/product-image-front-large.jpeg'},
 
 
 ])
@@ -213,7 +217,7 @@ const moveLens = (e)=> {
     /*display what the lens "sees":*/
 
     result.value.style.backgroundPosition = "-" + (x * cx.value) + "px -" + (y * cy.value) + "px";
-    
+    result.value.style.backgroundRepeat = 'no-repeat'
   }
 const getCursorPos = (e)=>{
       let a, x = 0, y = 0;
@@ -260,8 +264,8 @@ const changePopupCurrentImage = (index)=>{
 const resizeHandler = ()=>{
   // let h =  window.innerHeight;
   // let w =  window.innerWidth;
-  lensW.value = window.innerWidth/5
-  lensH.value = window.innerHeight/2
+  lensW.value = window.innerWidth/10
+  lensH.value = window.innerHeight/4
   messureSize();
 
 }
@@ -356,22 +360,30 @@ const changePopupCurrentVideo = (index) => {
   /*set the size of the lens:*/
   width: 150px;
   height: 100px;
-  top: 0;
-  right: 0;
+
 }
 
 
 #slider{
-    height: 520px;
+  text-align: center;
+    height: 520px; 
+    
+}
+.customMarginLeft{
+  margin-left: 50px;
+  margin-right: 50px;
 }
 .imageSlider{
-    left: 0;
+   
     max-width: 100%;
-    margin: 0 auto;
-    height: 450px;
+    max-height: 450px;
+    width: auto;
+    margin: 0 auto !important;
+    
+   /* height: 450px; */
 }
 .activeThumbnail{
-    border: 1px #e6eb41  solid;
+    border: 1px #eb5541  solid;
 }
 .imgCustomPopup{
   width: 100px;
