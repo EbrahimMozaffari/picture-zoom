@@ -72,8 +72,9 @@
       <arrowRight class="text-white mr-2 bg-slate-600 rounded-full cursor-pointer" style="" />
     </div>
    
-        <div class=" relative flex justify-end" id="slider" >
+        <div class=" relative " id="slider" >
          <div 
+         class="flex"
             @mouseenter="mouseOverPicture"  
             @mouseleave="mouseOutPicture" 
             @touchstart="touchStart"
@@ -113,12 +114,10 @@ const currentIndex = ref(0)
 const images = ref([
     // {small:'/images/p2-1-small.jpg',medium:'/images/p2-1-medium.jpg',larg:'/images/p2-1-larg.jpg'},
     // {small:'/images/p2-2-small.jpg',medium:'/images/p2-2-medium.jpg',larg:'/images/p2-2-larg.jpg'},
-    {small:'https://picsum.photos/id/230/60/45',medium:'https://picsum.photos/id/230/600/450',large:'https://picsum.photos/id/230/3200/2400'},
-    {small:'https://picsum.photos/id/231/60/45',medium:'https://picsum.photos/id/231/600/450',large:'https://picsum.photos/id/231/3200/2400'},
-    {small:'https://picsum.photos/id/232/60/45',medium:'https://picsum.photos/id/232/600/450',large:'https://picsum.photos/id/232/3200/2400'},
-    {small:'https://picsum.photos/id/233/60/45',medium:'https://picsum.photos/id/233/600/450',large:'https://picsum.photos/id/233/3200/2400'},
-    {small:'https://picsum.photos/id/234/60/45',medium:'https://picsum.photos/id/234/600/450',large:'https://picsum.photos/id/234/3200/2400'},
-    {small:'https://picsum.photos/id/400/60/45',medium:'https://picsum.photos/id/400/600/450',large:'https://picsum.photos/id/400/3200/2400'},
+    {small:'/images/product-image-thumbnail.jpeg',medium:'/images/product-image.jpeg',large:'/images/product-image-large.jpeg'},
+    {small:'/images/product-image-back-thumbnail.jpeg',medium:'/images/product-image-back.jpeg',large:'/images/product-image-back-large.jpeg'},
+    {small:'/images/product-image-front-thumbnail.jpeg',medium:'/images/product-image-front.jpeg',large:'/images/product-image-large-front.jpeg'},
+
 
 ])
 
@@ -214,6 +213,7 @@ const moveLens = (e)=> {
     /*display what the lens "sees":*/
 
     result.value.style.backgroundPosition = "-" + (x * cx.value) + "px -" + (y * cy.value) + "px";
+    
   }
 const getCursorPos = (e)=>{
       let a, x = 0, y = 0;
@@ -366,7 +366,8 @@ const changePopupCurrentVideo = (index) => {
 }
 .imageSlider{
     left: 0;
-    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
     height: 450px;
 }
 .activeThumbnail{
