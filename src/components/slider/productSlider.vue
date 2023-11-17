@@ -6,7 +6,7 @@
       <div class="h-5/6 w-11/12  mx-auto rounded-xl relative" >
         <div class="container overflow-hidden md:rounded-xl rounded-xl h-full">
           <div class=" w-full h-full">
-              <div class="relative bg-white rounded-xl shadow dark:bg-gray-700 h-full">
+              <div class="relative bg-white rounded-xl shadow h-full">
                 <ul class="w-2/3 flex mb-0 list-none flex-wrap  pb-4 flex-row">
                   <li class="-mb-px mr-0 last:mr-0 flex-auto text-center">
                     <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded  block leading-normal" v-on:click="toggleTabs(1)" :class="{'text-pink-600 bg-white': openTab !== 1, 'text-white bg-pink-600': openTab === 1}">
@@ -69,10 +69,10 @@
 
 
     <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center left-0 z-40" @click="previous">
-      <arrowLeft class="text-white bg-slate-600 rounded-full cursor-pointer" />
+      <arrowLeft class="text-black cursor-pointer" />
     </div>
     <div class="absolute top-1/2 transform -translate-y-1/2 flex flex-col items-center right-0 z-40" @click="next" >
-      <arrowRight class="text-white mr-2 bg-slate-600 rounded-full cursor-pointer" style="" />
+      <arrowRight class="text-black cursor-pointer" />
     </div>
    
         <div class=" relative " id="slider" :class="[mobile ? 'customMarginLeft':'customMarginLeft']" >
@@ -98,7 +98,7 @@
       </div>
 
     </div>
-    <div  class="fixed right-0 top-0 w-3/5 h-full pl-6" :class="[mobile ? '-z-10': '']">
+    <div  class="fixed right-0 top-0 w-3/5 h-full pl-6" :class="[mobile ? '-z-10': `z-${resultIndecx}`,]">
       <div ref="result"   id="myresult" class="img-zoom-result  w-full h-full"></div>
 
     </div>  
@@ -153,6 +153,7 @@ const popupImage = ref(null)
 const openTab = ref(1)
 const currentVideoIndex = ref(0)
 const videoShow = ref(true)
+const resultIndecx = ref(10)
 // const originalTransform = ref('');
 // let zoomed = false; // اضافه شده
 
@@ -183,6 +184,7 @@ result.value.style.backgroundSize = (myimage.value[0].width * cx.value) + "px " 
 }
 const mouseOverPicture =()=>{
   if(window.innerWidth>1024){
+    resultIndecx.value = 50
       lensShow.value = true
       result.value.style.backgroundImage = "url('" + images.value[currentIndex.value].large + "')";
   }
@@ -190,6 +192,7 @@ const mouseOverPicture =()=>{
   //messureSize()
 }
 const mouseOutPicture =()=>{
+  resultIndecx.value = 10
   lensShow.value = false
   result.value.style.backgroundImage = ''
 }
