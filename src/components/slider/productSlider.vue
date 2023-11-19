@@ -6,26 +6,26 @@
       <div class="h-5/6 w-11/12  mx-auto rounded-xl relative" >
         <div class="container overflow-hidden md:rounded-xl rounded-xl h-full">
           <div class=" w-full h-full">
-              <div class="relative bg-white rounded-xl shadow h-full">
-                <ul class="w-2/3 flex mb-0 list-none flex-wrap  pb-4 flex-row">
+              <div class=" relative bg-white rounded-xl shadow h-full " :class="mobile ? 'pt-14': 'pt-5'">
+                <ul class="w-1/3 flex mb-0 list-none flex-wrap  pb-4 flex-row"  v-if="!mobile">
                   <li class="-mb-px mr-0 last:mr-0 flex-auto text-center">
-                    <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded  block leading-normal" v-on:click="toggleTabs(1)" :class="{'text-pink-600 bg-white': openTab !== 1, 'text-white bg-pink-600': openTab === 1}">
+                    <a class="text-xs  uppercase px-5 py-3 shadow-lg rounded  block leading-normal text-black  bg-white" v-on:click="toggleTabs(1)" :class="{'text-black  font-bold': openTab !== 1, 'border-b-2 border-b-red-500 font-extrabold': openTab === 1}">
                       Images
                     </a>
                   </li>
                   <li class="-mb-px mr-2 last:mr-0 flex-auto text-center">
-                    <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded  block leading-normal" v-on:click="toggleTabs(2)" :class="{'text-pink-600 bg-white': openTab !== 2, 'text-white bg-pink-600': openTab === 2}">
+                    <a class="text-xs  uppercase px-5 py-3 shadow-lg rounded  block leading-normal  text-black  bg-white" v-on:click="toggleTabs(2)" :class="{'text-black  font-bold': openTab !== 2, 'border-b-2 border-b-red-500 font-extrabold': openTab === 2}">
                       Video
                     </a>
                   </li>
                 </ul>
                 <hr />
                       <div :class="{'hidden': openTab !== 1, 'block': openTab === 1}" class="h-full">
-                        <div class="p-10 grid grid-cols-4  h-full">
+                        <div class="p-2 grid grid-cols-4  h-full">
                           <div class="relative lg:col-span-3 col-span-4 h-full overflow-hidden">
                             <transition name="fade">
                               <template v-for="(img, index) in images">
-                                  <img  :key="index" ref="popupImage" :style="{ transform: `scale(${scale})`, cursor:isZoomed? 'zoom-out': 'zoom-in' }" style=""     @click="toggleZoom" v-if="popupCurrentIndex == index" class=" absolute z-30 w-full popupImg " :src="img.large" />
+                                  <img  :key="index" ref="popupImage" :style="{ transform: `scale(${scale})`, cursor:isZoomed? 'zoom-out': 'zoom-in' }" style=""     @click="toggleZoom" v-if="popupCurrentIndex == index" class=" absolute z-30  h-full popupImg " :src="img.large" />
                               </template>
                             </transition> 
                           </div>
@@ -40,7 +40,7 @@
                           </div>
                       </div>
                       <div :class="{'hidden': openTab !== 2, 'block': openTab === 2}" class="h-full">
-                        <div class="grid grid-cols-4">
+                        <div class="p-2 grid grid-cols-4">
                           <div class="relative lg:col-span-3 col-span-4 h-full">
                             <video v-if="videoShow" width="100%" height="240" controls :poster="video[currentVideoIndex].cover"> 
                               <source :src="video[currentVideoIndex].source" type="video/mp4">
@@ -58,7 +58,8 @@
                       </div>
 
                 
-                <button @click="popUpModal = !popUpModal" data-modal-hide="popup-modal" type="button" class="absolute -right-1 -top-1"><customDelete class="" /></button>
+                <button  @click="popUpModal = !popUpModal" data-modal-hide="popup-modal" type="button" class="absolute   " :class="[mobile? 'left-1 top-1 py-2 px-3 text-black font-bold rounded-lg border border-gray-400': 'right-1 top-1']"><customDelete v-if="!mobile" />{{mobile ? 'Back': ''}}</button>
+
               </div>
               
           </div>
@@ -75,7 +76,10 @@
       <arrowRight class="text-black cursor-pointer" />
     </div>
    
-        <div class=" relative " id="slider" :class="[mobile ? 'customMarginLeft':'customMarginLeft']" >
+        <div class=" relative " id="slider" :class="[mobile ? 'customMarginLeft mobileHeight':'customMarginLeft desktopHeight']"  
+          @touchstart="touchStart"
+          @touchmove="touchMove"
+          @touchend="touchEnd" >
          <div 
          class=""
             @mouseenter="mouseOverPicture"  
@@ -91,7 +95,7 @@
       <div ref="lens" v-if="!popUpModal" :style="`top:${lensY}px; left:${lensX}px; width:${lensW}px; height:${lensH}px;`" @click="openPopupModal(currentIndex)" class="lens absolute z-50" :class="lensShow ? 'border border-red-600 border-dashed': ''"></div>
          </div>
         
-      <div class=" thumbnail absolute bottom-0 order-last flex ">
+      <div class=" thumbnail absolute bottom-0 order-last flex " v-if="!mobile" >
         <div v-for="(img, index) in images" :key="index">
           <img @click="changeCurrentImage(index)" :class="currentIndex == index ? 'activeThumbnail' : ''"  class="imgCustom mx-1 cursor-pointer " :src="img.small" />
         </div>
@@ -154,6 +158,7 @@ const openTab = ref(1)
 const currentVideoIndex = ref(0)
 const videoShow = ref(true)
 const resultIndecx = ref(10)
+
 // const originalTransform = ref('');
 // let zoomed = false; // اضافه شده
 
@@ -172,6 +177,8 @@ onUnmounted(()=>{
 const messureSize = ()=>{
   if(window.innerWidth<1024){
     mobile.value=true
+  }else{
+    mobile.value=false
   }
   setTimeout(()=>{
   cx.value = result.value.offsetWidth / lens.value.offsetWidth;
@@ -355,8 +362,10 @@ const changePopupCurrentVideo = (index) => {
 <style scoped>
 .popupImg {
   transition: transform 0.3s ease-in-out;
+  
   max-width: 100% !important;
   max-height: 100% !important;
+  
 }
 .lens{
   position: absolute;
@@ -369,8 +378,14 @@ const changePopupCurrentVideo = (index) => {
 
 #slider{
   text-align: center;
-    height: 520px; 
+     
     
+}
+.desktopHeight{
+  height: 520px;
+}
+.mobileHeight{
+  height: 375px;
 }
 .customMarginLeft{
   margin-left: 50px;
@@ -379,9 +394,9 @@ const changePopupCurrentVideo = (index) => {
 .imageSlider{
    
     max-width: 100%;
-    max-height: 450px;
+    max-height: 360px;
     width: auto;
-    margin: 0 auto !important;
+    /* margin: 0 auto !important; */
     
    /* height: 450px; */
 }
@@ -389,7 +404,8 @@ const changePopupCurrentVideo = (index) => {
     border: 1px #eb5541  solid;
 }
 .imgCustomPopup{
-  width: 100px;
+ 
+  max-height: 100px;
 }
 .fade-enter-active, .fade-leave-active {
     transition: opacity .5s;

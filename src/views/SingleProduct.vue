@@ -13,15 +13,16 @@
           <p class=" mt-2  text-lg lg:text-xl	font-bold">Samsung Galaxy S23 Ultra 5G</p>
           <p class=" mt-2 font-bold text-lg lg:text-xl  mb-3">£500.00</p>
           <hr class="w-full h-1 mx-auto my-2   md:my-5 bg-gray-400 ">
-          <p class="mt-5">Slim: Dual SLim</p>
-          <p class="mt-5">Condotion: Like New</p>
-          <p class="mt-5">Color: LAVENDER</p>
-          <p class="mt-5">Network: Locked</p>
-          <p class="mt-5">Storage: 512GB</p>
+          <p>{{description}}</p>
+          <p class="mt-1">Slim: Dual SLim</p>
+          <p class="mt-1">Condotion: Like New</p>
+          <p class="mt-1">Color: LAVENDER</p>
+          <p class="mt-1">Network: Locked</p>
+          <p class="mt-1">Storage: 512GB</p>
           <hr class="w-full h-1 mx-auto my-2   md:my-5 bg-gray-400 ">
           <div class="pt-6">
             <button class="text-4xl lg:text-4xl	p-2 cursor-pointer text-black" @click="decrease">-</button>
-            <span class="px-4 py-2 lg:px-8 lg:py-6 bg-gray-300">{{ number }}</span>
+            <span class="px-4 py-2 lg:px-6 lg:py-4 bg-gray-300">{{ number }}</span>
             <button class="text-4xl lg:text-4xl	p-2 cursor-pointer text-black" @click="increase">+</button>
           </div>
           </div>
@@ -44,6 +45,7 @@ import { onMounted, ref } from 'vue';
 
 import productSlider from '../components/slider/productSlider.vue';
 const number = ref(1)
+const description = ref(`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo mi, finibus sed aliquet ut, semper id dolor. Morbi et orci non elit ultrices finibus in vel lectus.`)
 
 const increase = ()=>{
     number.value++
