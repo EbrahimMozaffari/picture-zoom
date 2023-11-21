@@ -4,7 +4,7 @@
   <main class=" mx-auto container">
     <div class="w-full text-center grid grid-cols-7">
       <div class="col-span-7  md:col-span-7  lg:col-span-3 m-3 bg-white p-3">
-        <productSlider />
+        <productSlider :description="description" />
       </div>
       <div class="col-span-7 md:col-span-7  lg:col-span-4  z-20">
         <div class="w-full h-full  font-sans p-5  lg:pl-16">

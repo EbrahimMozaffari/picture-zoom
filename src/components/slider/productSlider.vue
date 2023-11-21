@@ -3,7 +3,7 @@
     <div class="createToDoModal fixed w-full h-full top-0 left-0 flex items-center justify-center z-50" v-if="popUpModal">
       <div class="absolute w-full h-full bg-gray-900 opacity-90" ></div>
   
-      <div class="h-5/6 w-11/12  mx-auto rounded-xl relative" >
+      <div class="h-5/6 w-12/12  mx-auto rounded-xl relative" >
         <div class="container overflow-hidden md:rounded-xl rounded-xl h-full">
           <div class=" w-full h-full">
               <div class=" relative bg-white rounded-xl shadow h-full " :class="mobile ? 'pt-14': 'pt-5'">
@@ -25,18 +25,18 @@
                           <div class="relative lg:col-span-3 col-span-4 h-full overflow-hidden">
                             <transition name="fade">
                               <template v-for="(img, index) in images">
-                                  <img  :key="index" ref="popupImage" :style="{ transform: `scale(${scale})`, cursor:isZoomed? 'zoom-out': 'zoom-in' }" style=""     @click="toggleZoom" v-if="popupCurrentIndex == index" class=" absolute z-30  h-full popupImg " :src="img.large" />
+                                  <img  :key="index" ref="popupImage" :style="{ transform: `scale(${scale})`, cursor:isZoomed? 'zoom-out': 'zoom-in' }" style="" @dblclick="toggleZoomDoubleTap"   @click="toggleZoom" v-if="popupCurrentIndex == index" class=" absolute z-30 h-4/5   popupImg " :src="img.large" />
                               </template>
                             </transition> 
                           </div>
                           <div class="lg:col-span-1 col-span-4  relative">
+                            <p class="text-left">{{description}}</p>
                             <div class="bottom-0 order-last grid grid-cols-3">
                               <div v-for="(img, index) in images" :key="index" class="">
                                 <img @click="changePopupCurrentImage(index)" :class="popupCurrentIndex == index ? 'activeThumbnail' : ''"  class="imgCustomPopup mx-1 cursor-pointer my-1 " :src="img.medium" />
                               </div>
                             </div>
                           </div>
-                               
                           </div>
                       </div>
                       <div :class="{'hidden': openTab !== 2, 'block': openTab === 2}" class="h-full">
@@ -116,6 +116,10 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import arrowRight from '@/components/icons/arrowRight.vue'
 import arrowLeft from '@/components/icons/arrowLeft.vue'
 import customDelete from '@/components/icons/iconCustomDelete.vue'
+
+const props = defineProps({
+  description:String,
+})
 
 const lensShow = ref(false)
 const currentIndex = ref(0)
@@ -334,7 +338,7 @@ const handleZoom = (event) => {
 };
 
 const toggleZoom = (event) => {
- 
+  if(mobile.value) return false
   if(!isZoomed.value){
     handleZoom(event)
     isZoomed.value = true
@@ -342,6 +346,16 @@ const toggleZoom = (event) => {
     isZoomed.value = false
     scale.value = 1
     
+  }
+};
+const toggleZoomDoubleTap = (event) => {
+ console.log("dbl");
+  if(!isZoomed.value){
+    handleZoom(event)
+    isZoomed.value = true
+  }else{
+    isZoomed.value = false
+    scale.value = 1
   }
 };
 const toggleTabs = (index) => {
@@ -355,6 +369,10 @@ const changePopupCurrentVideo = (index) => {
     videoShow.value =true
   },100)
   
+};
+
+const swipedLeft = (index) => {
+  console.log("swipedLeft");
 };
 
 </script>
